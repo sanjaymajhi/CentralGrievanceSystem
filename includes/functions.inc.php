@@ -53,5 +53,5 @@ function validationProfileImage( $fileImage )
         return false;
     else
         return true;
-}
+} 
 ?>
