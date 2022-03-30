@@ -32,7 +32,7 @@ if($_POST)
     {
         $error_log['signupPhone'] = 'Invalid Phone!';
     }
-    if(!validationPassword($password))
+    if(!validationPassword($password)) 
     {
         $error_log['signupPassword'] = 'Must be min. 8 characters!';
     }
