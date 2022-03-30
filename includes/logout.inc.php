@@ -5,4 +5,4 @@
     session_destroy();
     // Return back to index/home page
     header("Location: ../");
-?>
+?> 
