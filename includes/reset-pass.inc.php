@@ -151,6 +151,6 @@ else
 {
     // If page is visited without clicking on login button
     header('Location: '.$_SERVER['PHP_SELF']);
-    exit();
+    exit(); 
 }
 ?>
