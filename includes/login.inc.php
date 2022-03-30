@@ -90,7 +90,7 @@ if($_POST)
 else
 {
     // If page is visited without clicking on login button
-    header('Location: ../');
+    header('Location: ../'); 
     exit();
 }
 ?>
