@@ -23,11 +23,11 @@
           <div class="table-responsive">
             <table class="table" id="complaints-table">
               <thead class="text-primary text-center">
-                <th>ID</th><th>Subject</th><th>Description</th><th>Date</th><th>Status</th><?php if ( $_SESSION['userType'] != 'user' ) {echo"<th>Action</th>";}?>
+                <th>ID</th><th>Subject</th><th>Date</th><th>Status</th><th>Details</th><?php if ( $_SESSION['userType'] != 'user' ) {echo"<th>Action</th>";}?>
               </thead>
               <tbody>
               <?php
-                  $sql = "SELECT complaints.id,complaints.subject,complaints.description,complaints.created_at,complaints.status FROM `complaints` JOIN `users` ON complaints.dept_id=users.dept_id WHERE users.id='".$_SESSION['userId']."'";
+                  $sql = "SELECT complaints.id,complaints.subject,complaints.description,complaints.created_at,complaints.status,complaints.dept_id FROM `complaints` JOIN `users` ON complaints.dept_id=users.dept_id WHERE users.id='".$_SESSION['userId']."'";
                   $result = mysqli_query($conn, $sql);
                   $id = 0;
 
@@ -36,10 +36,14 @@
                     while($row = mysqli_fetch_assoc($result))
                     {
                       $id += 1;
+                      $date = strtotime($row['created_at']);
+                      $datestring = date('M d, Y', $date);
+
                       echo "<tr class=\"text-center\">";
                       echo "<td class=\"d-none\">".$row['id']."</td>";
-                      echo "<td>".$id."</td><td>".$row['subject']."</td><td>".$row['description']."</td><td>".$row['created_at']."</td><td class=\"text-primary font-weight-bold\">".$row['status']."</td>";
-
+                      echo "<td>".$row['dept_id']."-".$row['id']."</td><td>".$row['subject']."</td><td>".$datestring."</td><td class=\"text-primary font-weight-bold\">".$row['status']."</td>";
+                      echo "<td><button id=\"details\" class=\"card-title btn btn-success p-2 m-1\" data-toggle=\"modal\" data-target=\"#showComplaint".$row['id']."\">See Details</button></td>";
+                      
                       if ( $_SESSION['userType'] != 'user' )
                       {
                         if ( $row['status'] == 'pending' )
@@ -47,9 +51,9 @@
                         else if ( $row['status'] == 'approved')
                           echo "<td><button class=\"btn btn-success btn-round btn-fab\" id=\"fixed\"><i class=\"material-icons\" data-toggle=\"tooltip\" data-html=\"true\" title=\"Fixed\">build</i></button></td>";
                         else if ( $row['status'] == 'rejected' )
-                          echo "<td>No Action</td>";
+                          echo "<td>Rejected</td>";
                         else
-                          echo "<td>No Action</td>";
+                          echo "<td>Fixed</td>";
                       }
                       echo "</tr>";
                     }
@@ -103,7 +107,7 @@
           <div class="table-responsive">
             <table class="table" id="complaints-table">
               <thead class="text-primary text-center">
-                <th>ID</th><th>Department</th><th>Subject</th><th>Description</th><th>Date</th><th>Status</th>
+                <th>ID</th><th>Department</th><th>Subject</th><th>Date</th><th>Status</th><th>Details</th>
               </thead>
               <tbody>
               <?php
@@ -116,9 +120,13 @@
                     while($row = mysqli_fetch_assoc($result))
                     {
                       $id += 1;
+                      $date = strtotime($row['created_at']);
+                      $datestring = date('M d, Y', $date);
+                      
                       echo "<tr class=\"text-center\">";
                       echo "<td class=\"d-none\">".$row['id']."</td>";
-                      echo "<td>".$id."</td><td>".$row['dept_id']."</td><td>".$row['subject']."</td><td>".$row['description']."</td><td>".$row['created_at']."</td><td class=\"text-primary font-weight-bold\">".$row['status']."</td>";
+                      echo "<td>".$row['dept_id']."-".$row['id']."</td><td>".$row['dept_id']."</td><td>".$row['subject']."</td><td>".$datestring."</td><td class=\"text-primary font-weight-bold\">".$row['status']."</td>";
+                      echo "<td><button id=\"details\" class=\"card-title btn btn-success p-2 m-1\" data-toggle=\"modal\" data-target=\"#showComplaint".$row['id']."\">See Details</button></td>";
                       echo "</tr>";
                     }
                   }
@@ -126,7 +134,7 @@
                   {
                     echo "<tr class=\"text-center\">";
                     echo "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>";
-                    echo "</tr>";   
+                    echo "</tr>";
                   }
                   // Free result set
                   mysqli_free_result($result);
@@ -143,6 +151,157 @@
     }
   ?>
 </div>
+
+<?php
+  $sql = "SELECT * FROM complaints where user_id='".$_SESSION['userId']."'";
+  $result = mysqli_query($conn, $sql);
+  $id = 0;
+  $arr = array(
+    "10am","11am","12pm", "1pm","2pm","3pm","4pm","5pm","6pm","7pm"
+  );
+
+  if (mysqli_num_rows($result) > 0)
+  {
+    while($row = mysqli_fetch_assoc($result))
+    {
+      $time=$arr[$row['id']%10];
+      $date = strtotime($row['created_at']);
+      $cdatestring = date('M d, Y', $date);
+      $date = strtotime("+7 day", $date);
+      $vdatestring = date('M d, Y', $date);
+
+      echo "<div class=\"modal fade\" id=\"showComplaint".$row['id']."\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"exampleModalCenterTitle\" aria-hidden=\"true\">
+        <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">
+          <div class=\"modal-content card\">
+            <div class=\"modal-header card-header-primary\">
+              <h5 class=\"modal-title card-title\" id=\"exampleModalLongTitle\">Complaint Details</h5>
+              <button type=\"button\" class=\"close card-header-icon\" data-dismiss=\"modal\" aria-label=\"Close\">
+                <span aria-hidden=\"true\">&times;</span>
+              </button>
+            </div>
+            <div class=\"modal-body\" style=\"color:white;\">
+              <table style=\"width:100%\">
+                <thead></thead>
+                <tbody class=\"table\">
+                  <tr>
+                    <td>Complaint Id</td>
+                    <td>".$row['dept_id']."-".$row['id']."</td>
+                  </tr>
+                  <tr>
+                    <td>Date of complaint</td>
+                    <td>".$cdatestring."</td>
+                  </tr>
+                  <tr>
+                    <td>Department</td>
+                    <td>".$row['dept_id']."</td>
+                  </tr>
+                  <tr>
+                    <td>Subject</td>
+                    <td>".$row['subject']."</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>".$row['description']."</td>
+                  </tr>
+                  <tr>
+                    <td>Video Meeting Date</td>
+                    <td>".$vdatestring." ".$time."</td>
+                  </tr>
+                  <tr>
+                    <td>Video Meeting Link</td>
+                    <td><a target =\"blank\" href=\"https://project-vchat.herokuapp.com/join?room=".$row['dept_id']."-".$row['id']."\">Click here</a></td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td>".$row['status']."</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>";
+    }
+  }
+  // Free result set
+  mysqli_free_result($result);
+?>
+
+<!-- for showing complaints to you -->
+<?php
+  $sql = "SELECT complaints.id,complaints.subject,complaints.description,complaints.created_at,complaints.status,complaints.dept_id FROM `complaints` JOIN `users` ON complaints.dept_id=users.dept_id WHERE users.id='".$_SESSION['userId']."'";
+  $result = mysqli_query($conn, $sql);
+  $id = 0;
+  $arr = array(
+    "10am","11am","12pm", "1pm","2pm","3pm","4pm","5pm","6pm","7pm"
+  );
+
+  if (mysqli_num_rows($result) > 0)
+  {
+    while($row = mysqli_fetch_assoc($result))
+    {
+      $time=$arr[$row['id']%10];
+      $date = strtotime($row['created_at']);
+      $cdatestring = date('M d, Y', $date);
+      $date = strtotime("+7 day", $date);
+      $vdatestring = date('M d, Y', $date);
+
+      echo "<div class=\"modal fade\" id=\"showComplaint".$row['id']."\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"exampleModalCenterTitle\" aria-hidden=\"true\">
+        <div class=\"modal-dialog modal-dialog-centered\" role=\"document\">
+          <div class=\"modal-content card\">
+            <div class=\"modal-header card-header-primary\">
+              <h5 class=\"modal-title card-title\" id=\"exampleModalLongTitle\">Complaint Details</h5>
+              <button type=\"button\" class=\"close card-header-icon\" data-dismiss=\"modal\" aria-label=\"Close\">
+                <span aria-hidden=\"true\">&times;</span>
+              </button>
+            </div>
+            <div class=\"modal-body\" style=\"color:white;\">
+              <table style=\"width:100%\">
+                <thead></thead>
+                <tbody class=\"table\">
+                  <tr>
+                    <td>Complaint Id</td>
+                    <td>".$row['dept_id']."-".$row['id']."</td>
+                  </tr>
+                  <tr>
+                    <td>Date of complaint</td>
+                    <td>".$cdatestring."</td>
+                  </tr>
+                  <tr>
+                    <td>Department</td>
+                    <td>".$row['dept_id']."</td>
+                  </tr>
+                  <tr>
+                    <td>Subject</td>
+                    <td>".$row['subject']."</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>".$row['description']."</td>
+                  </tr>
+                  <tr>
+                    <td>Video Meeting Date</td>
+                    <td>".$vdatestring." ".$time."</td>
+                  </tr>
+                  <tr>
+                    <td>Video Meeting Link</td>
+                    <td><a target =\"blank\" href=\"https://project-vchat.herokuapp.com/join?room=".$row['dept_id']."-".$row['id']."\">Click here</a></td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td>".$row['status']."</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>";
+    }
+  }
+  // Free result set
+  mysqli_free_result($result);
+?>
 
 <!-- Create Complaints Modal -->
 <!-- Modal -->
@@ -214,6 +373,17 @@
               </div>
             </div>
           </div>
+
+          <!-- upload file -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="exampleFormControlFile1">Upload file</label>
+                <input type="file" class="form-control-file" id="exampleFormControlFile1" style="z-index:1; opacity:1;">
+              </div>
+            </div>
+          </div>
+
           <div class="clearfix"></div>
         </div>
         
@@ -284,6 +454,7 @@
     // Action Buttons Request
     $('#complaints-table button').click(function(e){
       e.preventDefault();
+      if(e.target.id=="details") return;
 
       action = $(this).attr('id');
       name   = $(this).parent().siblings('.d-none').text();
@@ -323,4 +494,5 @@
       });
     });
   });
+
 </script>

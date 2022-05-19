@@ -68,16 +68,9 @@
                         <a class="nav-link" href="<?php $siteUrl?>#home">Home<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php $siteUrl?>#announcements">Announcements</a>
-                    </li> 
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?php $siteUrl?>#about">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="<?php $siteUrl?>#contact">Contact</a>
                     </li>
                 </ul>
-                <input class="form-control w-100 mx-sm-2" type="search" placeholder="Search" aria-label="Search">
             </div>
         </nav>
     </header>

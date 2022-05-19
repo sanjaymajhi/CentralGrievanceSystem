@@ -42,12 +42,6 @@
                 if ( $_SESSION['userType'] != 'user' )
                 {
             ?>
-            <li class="nav-item">
-                <a class="nav-link" href="#announcements">
-                    <i class="material-icons">add_alert</i>
-                    <p>Announcements</p>
-                </a>
-            </li>
             <?php
                 }
             ?>

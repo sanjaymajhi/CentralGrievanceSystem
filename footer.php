@@ -53,28 +53,17 @@
         <h6 class="text-uppercase font-weight-bold" id="contact">Complaint Portal</h6>
         <hr class="deep-purple accent-2 mb-3 mt-0 d-inline-block mx-auto" style="width: 60px;">
         <p>
-          Lovely Professional University, Jalandhar - 144411
+          University Grants Commission
         </p>
-        <p>
-          <i class="fa fa-envelope mr-2"></i> info@cms.com
+        <p>cms@ugc.com
         </p>
-        <p>
-          <i class="fa fa-phone mr-2"></i> + 91 234 567 8812
+        <p>+ 91 1234567890
         </p>
       </div>
       <!-- Grid column -->
 
       <!-- Grid column -->
       <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-1">
-        <!-- Links -->
-        <h6 class="text-uppercase font-weight-bold">Products</h6>
-        <hr class="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
-        <p>
-          <a href="#!"><img src="./assets/img/apple_store.png" class="app-store" alt="Apple Store"></a>
-        </p>
-        <p>
-          <a href="#!"><img src="./assets/img/google_store.png" class="app-store" alt="Google Store"></a>
-        </p>
       </div>
       <!-- Grid column -->
 
@@ -104,7 +93,7 @@
 
   <!-- Copyright -->
   <div class="footer-copyright text-center py-3" id="footer-copyright">&copy; <script>document.getElementById('footer-copyright').innerHTML += new Date().getFullYear();</script> Copyright | 
-    <a class="text" href="/" style="color: #8e2de2;"> Complaint Portal</a>
+    <a class="text" href="/ComplaintSystem" style="color: #8e2de2;"> Complaint Portal</a>
   </div>
   <!-- Copyright -->
 

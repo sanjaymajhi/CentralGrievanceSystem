@@ -253,23 +253,7 @@
         <div class="col-lg-5 col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title">Departments / Categories</h4>
-                    <p class="card-category">
-                        <?php
-                            $sql    = "SELECT `created_at` FROM `departments` ORDER BY `id` DESC LIMIT 1";
-                            $result = mysqli_query($conn, $sql);
-                            $lastRecord = "No Record";
-
-                            if ( ($rowCount = mysqli_num_rows($result)) > 0 )
-                            {
-                                $row = mysqli_fetch_row($result);
-                                $lastRecord = "Last Department on ".$row[0];
-                            }
-                            // Free result set
-                            mysqli_free_result($result);
-                            echo $lastRecord;
-                        ?>
-                    </p>
+                    <h4 class="card-title">Departments</h4>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover">
@@ -306,28 +290,18 @@
         <div class="col-lg-7 col-md-12">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title">Department Heads / Caretakers</h4>
-                    <p class="card-category">
-                        <?php
-                            $sql    = "SELECT `created_at` FROM `users` WHERE `role`='caretaker' ORDER BY `id` DESC LIMIT 1";
-                            $result = mysqli_query($conn, $sql);
-                            $lastRecord = "No Record";
-
-                            if ( ($rowCount = mysqli_num_rows($result)) > 0 )
-                            {
-                                $row = mysqli_fetch_row($result);
-                                $lastRecord = "Last Department on ".$row[0];
-                            }
-                            // Free result set
-                            mysqli_free_result($result);
-                            echo $lastRecord;
-                        ?>
-                    </p>
+                    <h4 class="card-title">Department Officer</h4>
                 </div>
                 <div class="card-body table-responsive">
                     <table class="table table-hover">
                         <thead class="text-warning text-center">
-                            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Department</th>
+                            <th>ID</th><th>Name</th><th>Email</th>
+                            <?php
+                                if ( $_SESSION['userType'] != 'user' ){
+                                    echo "<th>Phone</th>";
+                                }
+                            ?>
+                            <th>Department</th>
                         </thead>
                         <tbody>
                             <?php
@@ -341,7 +315,11 @@
                                     {
                                         $id += 1;
                                         echo "<tr class=\"text-center\">";
-                                        echo "<td>".$id."</td><td>".$row['name']."</td><td>".$row['email']."</td><td>".$row['phone']."</td><td>".$row['dept_name']."</td>";
+                                        echo "<td>".$id."</td><td>".$row['name']."</td><td>".$row['email']."</td>";
+                                        if ( $_SESSION['userType'] != 'user' ){
+                                            echo "<td>".$row['phone']."</td>";
+                                        }
+                                        echo "<td>".$row['dept_name']."</td>";
                                         echo "</tr>";
                                     }
                                 }
